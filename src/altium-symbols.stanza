@@ -1,0 +1,205 @@
+#use-added-syntax(jitx)
+doc:\<DOC>
+   Altium Power and Ground Symbols
+
+   The drawings are placed on the "symbol" layer.
+   The ">Value" text is placed on the "value" layer.
+<DOC>
+defpackage altium-symbols :
+  import core
+  import collections
+  import jitx
+  import math
+  import altium-symbols/utils
+
+doc:\<DOC>Copy of TPowerObjectStyle from Altium Designer API <DOC>
+public defenum TPowerObjectStyle :
+  ePowerCircle
+  ePowerArrow
+  ePowerBar
+  ePowerWave
+  ePowerGndPower
+  ePowerGndSignal
+  ePowerGndEarth
+  eGOSTPowerArrow
+  eGOSTPowerGndPower
+  eGOSTPowerGndEarth
+  eGOSTPowerBar
+
+public defstruct AltiumPowerSymbol :
+  style-enum:TPowerObjectStyle
+  doc:\<DOC>Style name in Altium Designer GUI<DOC>
+  style-name:String
+  doc:\<DOC>The `pcb-symbol` object<DOC>
+  symbol-def:JITXDef
+  doc:\<DOC>The `name` field of the `pcb-symbol`<DOC>
+  symbol-name:String
+
+deftype PowerObject 
+
+public defn power-object (name:TPowerObjectStyle|String) -> JITXDef :
+  val power-symbols = [
+    AltiumPowerSymbol(ePowerCircle, "Circle", altium-power-circle-sym, "ALTIUM-POWER-CIRCLE")
+    AltiumPowerSymbol(ePowerArrow, "Arrow", altium-power-arrow-sym, "ALTIUM-POWER-ARROW")
+    AltiumPowerSymbol(ePowerBar, "Bar", altium-power-bar-sym, "ALTIUM-POWER-BAR")
+    AltiumPowerSymbol(ePowerWave, "Wave", altium-power-wave-sym, "ALTIUM-POWER-WAVE")
+    AltiumPowerSymbol(ePowerGndPower, "Power Ground", altium-power-gnd-power-sym, "ALTIUM-POWER-GND-POWER")
+    AltiumPowerSymbol(ePowerGndSignal, "Power Signal", altium-power-gnd-signal-sym, "ALTIUM-POWER-GND-SIGNAL")
+    AltiumPowerSymbol(ePowerGndEarth, "Earth", altium-power-gnd-earth-sym, "ALTIUM-POWER-GND-EARTH")
+    AltiumPowerSymbol(eGOSTPowerArrow, "GOST Arrow", altium-gost-power-arrow-sym, "ALTIUM-GOST-POWER-ARROW")
+    AltiumPowerSymbol(eGOSTPowerGndPower, "GOST Power", altium-gost-gnd-power-sym, "ALTIUM-GOST-GND-POWER")
+    AltiumPowerSymbol(eGOSTPowerGndEarth, "GOST Earth", altium-gost-gnd-earth-sym, "ALTIUM-GOST-GND-EARTH")
+    AltiumPowerSymbol(eGOSTPowerBar, "GOST Bar",altium-gost-bar-sym, "ALTIUM-GOST-BAR")
+  ]
+  match(name) :
+    (enum:TPowerObjectStyle) :
+      match(find({style-enum(_) == enum} power-symbols)):
+        (sym:AltiumPowerSymbol): symbol-def(sym) 
+        (f:False) :
+          throw(Exception("Unrecognized Altium Power Object Style %_" % [enum]))
+    (name:String) : 
+      match(find({style-name(_) == name} power-symbols)):
+        (sym:AltiumPowerSymbol): symbol-def(sym) 
+        (f:False) :
+          throw(Exception("Unrecognized Altium Power Object Style Name %_" % [name]))
+
+public defn altium-power-symbol (style:Int) -> String:
+  altium-power-symbols[style] where:
+    ; The order corresponds to enum SCH.TPowerObjectStyle in Altium API
+    val altium-power-symbols =
+      [ "altium-power-circle-sym"       ; 0 - ePowerCircle
+        "altium-power-arrow-sym"        ; 1 - ePowerArrow
+        "altium-power-bar-sym"          ; 2 - ePowerBar
+        "altium-power-wave-sym"         ; 3 - ePowerWave
+        "altium-power-gnd-power-sym"    ; 4 - ePowerGndPower
+        "altium-power-gnd-signal-sym"   ; 5 - ePowerGndSignal
+        "altium-power-gnd-earth-sym"    ; 6 - ePowerGndEarth
+        "altium-gost-power-arrow-sym"   ; 7 - eGOSTPowerArrow
+        "altium-gost-gnd-power-sym"     ; 8 - eGOSTPowerGndPower
+        "altium-gost-gnd-earth-sym"     ; 9 - eGOSTPowerGndEarth
+        "altium-gost-bar-sym"           ; 10 - altium-gost-bar-sym
+      ]
+
+public pcb-symbol altium-power-circle-sym :
+  name = "ALTIUM-POWER-CIRCLE"
+  pin p[0] at unit-point(0.0, 0.0)
+
+  unit-circle([3.0 / 2.0 * 0.5, 0.0], 0.5 / 2.0)
+  unit-line([[0.0, 0.0], [0.5, 0.0]])
+  unit-val([1.0, -0.2])
+  
+  preferred-orientation = PreferRotation([1])
+
+public pcb-symbol altium-power-arrow-sym :
+  name = "ALTIUM-POWER-ARROW"
+  pin p[0] at unit-point(0.0, 0.0)
+
+  unit-line([[0.0, 0.0], [0.3, 0.0]])
+  unit-triangle([0.3, 0.0], [0.9, 0.0], 0.6)
+  unit-val([1.0, -0.2])
+
+  preferred-orientation = PreferRotation([1])
+
+public pcb-symbol altium-power-bar-sym : 
+  name = "ALTIUM-POWER-BAR"
+  pin p[0] at unit-point(0.0, 0.0)
+
+  unit-line([[0.0, 0.0], [1.0, 0.0]])
+  unit-line([[1.0, 0.5], [1.0, -0.5]])
+  unit-val([0.2, 0.2])
+
+  preferred-orientation = PreferRotation([1])
+
+public pcb-symbol altium-power-wave-sym :
+  name = "ALTIUM-POWER-WAVE"
+  pin p[0] at unit-point(0.0, 0.0)
+
+  unit-line([[0.0, 0.0], [0.6, 0.0]])
+  unit-approx-arc([1.0, 0.0], 0.4, PI, 3.0 * PI / 2.0)
+  unit-approx-arc([0.2, 0.0], 0.4, PI / 2.0)
+
+  preferred-orientation = PreferRotation([1])
+
+public pcb-symbol altium-power-gnd-power-sym :
+  name = "ALTIUM-POWER-GND-POWER"
+  pin p[0] at unit-point(0.0, 0.0)
+
+  unit-line([[0.0, 0.0], [1.0, 0.0]])
+  unit-line([[1.0, -1.0], [1.0, 1.0]], 0.1)
+  unit-line([[1.28, -0.72], [1.28, 0.72]], 0.1)
+  unit-line([[1.56, -0.44], [1.56, 0.44]], 0.1)
+  unit-line([[1.84, -0.16], [1.84, 0.16]], 0.1)
+  unit-val([1.0, -0.4])
+
+  preferred-orientation = PreferRotation([3])
+
+public pcb-symbol altium-power-gnd-signal-sym :
+  name = "ALTIUM-POWER-GND-SIGNAL"
+  pin p[0] at unit-point(0.0, 0.0)
+
+  unit-line([[0.0, 0.0], [1.0, 0.0]])
+  unit-triangle([1.0, 0.0], [2.0, 0.0], 2.0)
+  unit-val([1.0, -0.4])
+
+  preferred-orientation = PreferRotation([3])
+
+public pcb-symbol altium-power-gnd-earth-sym :
+  name = "ALTIUM-POWER-GND-EARTH"
+  pin p[0] at unit-point(0.0, 0.0)
+
+  unit-line([[0.0, 0.0], [1.0, 0.0]])
+  unit-line([[1.0, -1.0], [1.0, 1.0]])
+  unit-line([[1.0, -1.0], [2.0, -1.5]])
+  unit-line([[1.0, 0.0], [2.0, -0.5]])
+  unit-line([[1.0, 1.0], [2.0, 0.5]])
+
+  unit-val([0.2, -0.2])
+
+  preferred-orientation = PreferRotation([3])
+
+public pcb-symbol altium-gost-power-arrow-sym :
+  name = "ALTIUM-GOST-POWER-ARROW"
+  pin p[0] at unit-point(0.0, 0.0)
+
+  unit-line([[0.0, 0.0], [1.0, 0.0]])
+  unit-line([[1.0, 0.0], [0.4, 0.3]])
+  unit-line([[1.0, 0.0], [0.4, -0.3]])
+  unit-val([0.6, 0.2])
+
+  preferred-orientation = PreferRotation([1])
+
+public pcb-symbol altium-gost-gnd-power-sym :
+  name = "ALTIUM-GOST-GND-POWER"
+  pin p[0] at unit-point(0.0, 0.0)
+
+  unit-line([[0.0, 0.0], [1.5, 0.0]])
+  unit-line([[1.5, -1.0], [1.5, 1.0]], 0.1)
+  unit-line([[1.9, -0.6], [1.9, 0.6]], 0.1)
+  unit-line([[2.3, -0.2], [2.3, 0.2]], 0.1)
+  unit-val([0.2, -0.2])
+
+  preferred-orientation = PreferRotation([3])
+
+public pcb-symbol altium-gost-gnd-earth-sym :
+  name = "ALTIUM-GOST-GND-EARTH"
+  pin p[0] at unit-point(0.0, 0.0)
+
+  unit-circle([1.5, 0.0], 1.25)
+  unit-line([[0.0, 0.0], [1.5, 0.0]])
+  unit-line([[1.5, -1.0], [1.5, 1.0]], 0.1)
+  unit-line([[1.9, -0.6], [1.9, 0.6]], 0.1)
+  unit-line([[2.3, -0.2], [2.3, 0.2]], 0.1)
+  unit-val([0.72, -0.2])
+
+  preferred-orientation = PreferRotation([3])
+
+public pcb-symbol altium-gost-bar-sym : 
+  name = "ALTIUM-GOST-BAR"
+  pin p[0] at unit-point(0.0, 0.0)
+
+  unit-line([[0.0, 0.0], [2.0, 0.0]])
+  unit-line([[2.0, -0.8], [2.0, 0.8]])
+  unit-val([1.0, -0.2])
+
+  preferred-orientation = PreferRotation([1])
+

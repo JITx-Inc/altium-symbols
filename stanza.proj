@@ -1,0 +1,4 @@
+
+packages altium-symbols/* defined-in "./src/"
+packages altium-symbols/examples/* defined-in "./examples/"
+

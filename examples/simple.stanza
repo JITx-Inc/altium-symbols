@@ -1,0 +1,42 @@
+#use-added-syntax(jitx)
+defpackage altium-symbols/examples/simple :
+  import core
+  import jitx
+  import jitx/commands
+  import ocdb/utils/generic-components
+  import altium-symbols
+  import jsl/examples/landpatterns/board
+
+; Module to run as a design
+pcb-module top-level :
+  pin GND
+  pin VDD
+  pin signal
+
+  ; Create a 10k resistor component
+  res-strap(signal, VDD, 10.0e3)
+  cap-strap(signal, GND, 10.0e3)
+
+  net net-GND (GND)
+  symbol(net-GND) = altium-power-gnd-earth-sym
+
+  net net-VDD (VDD)
+  symbol(net-VDD) = altium-power-wave-sym
+
+val board-shape = RoundedRectangle(50.0, 50.0, 0.25)
+
+; Set the top level module (the module to be compile into a schematic and PCB)
+set-current-design("simple")
+set-rules(default-rules)
+set-board(default-board(board-shape))
+
+set-main-module(top-level)
+
+; View the results
+view-board()
+
+set-export-backend(`kicad)
+view-schematic()
+export-cad()
+
+
