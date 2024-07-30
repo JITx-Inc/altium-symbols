@@ -1,0 +1,64 @@
+#use-added-syntax(jitx)
+defpackage altium-symbols/examples/components/comp-capacitor :
+  import core
+  import jitx
+  import jitx/commands
+
+
+pcb-pad rect-smd-pad :
+  name = "rect-smd-pad"
+  type = SMD
+  shape = Rectangle(0.600, 0.280)
+  layer(Paste(Top)) = Rectangle(0.600, 0.280)
+  layer(SolderMask(Top)) = Rectangle(0.700, 0.380)
+
+pcb-landpattern lp :
+  pad p[1] : rect-smd-pad at loc(0.0, 0.410) on Top
+  pad p[2] : rect-smd-pad at loc(0.0, -0.410) on Top
+
+  layer(Silkscreen("F-SilkS", Top)) = Text(">REF", 0.6, C, loc(0.750, 0.0, 270.000))
+  layer(CustomLayer("Fab", Top)) = Text(">VALUE", 0.3, C, loc(0.600, 0.0, 270.000))
+  layer(Courtyard(Top)) = Rectangle(0.900, 1.400)
+
+pcb-symbol sym-capacitor-sym :
+  pin p[1] at Point(0.0, 2.540) with :
+    direction = Up
+    length = 0.0
+    number-size = 0.0
+    name-size = 0.0
+  pin p[2] at Point(0.0, -2.540) with :
+    direction = Down
+    length = 0.0
+    number-size = 0.0
+    name-size = 0.0
+
+  draw("value") = Text(">VALUE", 1.27, W, loc(1.270, -1.270))
+  draw("reference") = Text(">REF", 1.27, W, loc(1.270, 1.270))
+  draw("foreground") = Line(0.254, [Point(0.0, 2.540), Point(0.0, 0.508)])
+  draw("foreground") = Line(0.254, [Point(-1.270, 0.508), Point(1.270, 0.508)])
+  draw("foreground") = Line(0.254, [Point(0.0, -0.508), Point(0.0, -2.540)])
+  draw("foreground") = Line(0.254, [Point(-1.270, -0.508), Point(1.270, -0.508)])
+
+public pcb-component component :
+  name = "my-capacitor"
+  description = "Capacitor SMD 10V 10uF X5R ±20% 0402"
+  emodel = Capacitor(1.0e-05, 0.2, 10.0, false, UNKNOWN, "X5R")
+  reference-prefix = "C"
+  pin-properties :
+    [pin:Ref | pads:Ref ... | side:Dir | electrical-type:String | bank:Int]
+    [p[1] | p[1] | Up | "passive" | 0]
+    [p[2] | p[2] | Down | "passive" | 0]
+
+  assign-landpattern(lp)
+  assign-symbol(sym-capacitor-sym)
+
+  property(self.category) = "capacitor"
+  property(self.case) = "0402"
+  property(self.mounting) = "smd"
+  property(self.rated-temperature) = Toleranced(15.0, 70.0, 70.0)
+  property(self.capacitance) = 1.0e-05
+  property(self.type) = "ceramic"
+  property(self.rated-voltage) = 10.000
+  property(self.temperature-coefficent) = "X5R"
+  property(self.tolerance) = Toleranced(1.0e-05, 2.0e-06, 2.0e-06)
+

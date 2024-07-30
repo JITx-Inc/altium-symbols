@@ -1,0 +1,44 @@
+#use-added-syntax(jitx)
+defpackage altium-symbols/examples/simple :
+  import core
+  import jitx
+  import jitx/commands
+  import altium-symbols
+  import altium-symbols/examples/board
+  import altium-symbols/examples/components/comp-resistor
+  import altium-symbols/examples/components/comp-capacitor
+
+; Module to run as a design
+pcb-module top-level :
+  port GND
+  port VDD
+  port signal
+
+  ; Instantiate components
+  inst R1 : altium-symbols/examples/components/comp-resistor/component
+  inst C1 : altium-symbols/examples/components/comp-capacitor/component
+  
+  ; Connect components
+  net (R1.p[1], signal)
+  net net-VDD (R1.p[2], VDD)
+  net (C1.p[1], signal)
+  net net-GND (C1.p[2], GND)
+
+  ; Specify Power/Ground Symbols
+  symbol(net-GND) = altium-power-gnd-earth-sym
+  symbol(net-VDD) = altium-power-wave-sym
+
+val board-shape = RoundedRectangle(50.0, 50.0, 0.25)
+
+; Set the top level module (the module to be compile into a schematic and PCB)
+set-current-design("simple")
+set-rules(default-rules)
+set-board(default-board(board-shape))
+set-main-module(top-level)
+
+; View the results
+view-board()
+view-schematic()
+
+
+

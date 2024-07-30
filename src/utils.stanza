@@ -1,0 +1,101 @@
+#use-added-syntax(jitx)
+defpackage altium-symbols/utils :
+  import core
+  import collections
+  import math
+  import jitx
+
+; ====== Unit Conversion Functions =======
+; The following functions expect sizes and coordinates in "Symbol Units" which 
+; is the expected grid size in schematics. For Kicad this is 50 mil, or 1.27 mm
+
+val UNIT-TO-MM = 2.54
+
+public defn unit-point (x:Double, y:Double, scale:Double = UNIT-TO-MM) :
+  Point(scale * x, scale * y)
+  
+public defn point-coords (p:Point|[Double, Double]) :
+  match(p) :
+    (pp:Point) : [x(pp), y(pp)]
+    (dd:[Double, Double]) : dd
+  
+public defn unit-point (p:Point|[Double, Double], scale:Double) :
+  val [x, y] = point-coords(p)
+  unit-point(x, y, scale)
+
+public defn unit-point (p:Point|[Double, Double]) :
+  unit-point(p, UNIT-TO-MM)
+
+public defn unit-points (ps:Collection<Point|[Double, Double]>,
+                         scale:Double = UNIT-TO-MM) :
+  to-list(seq({unit-point(_, scale)}, ps))
+
+public defn unit-loc (p:Point|[Double, Double], scale:Double = UNIT-TO-MM) :
+  val [x, y] = point-coords(p)
+  val l = loc(x, y, 0.0, NoFlip)
+  sub-center(l, unit-point(center(l), scale))
+
+public defn unit-line (ps:Collection<Point|[Double, Double]>,
+                       w:Double = 0.05,
+                       scale:Double = UNIT-TO-MM) :
+  inside pcb-symbol :
+    draw("symbol") = Line(scale * w, unit-points(ps, scale))
+
+public defn unit-polygon (ps:Collection<Point|[Double, Double]>,
+                          scale:Double = UNIT-TO-MM) :
+  inside pcb-symbol :
+    draw("symbol") = Polygon(unit-points(ps, scale))
+
+public defn unit-circle (p:Point|[Double, Double],
+                         r:Double,
+                         scale:Double = UNIT-TO-MM) :
+  val [x, y] = point-coords(p)
+  inside pcb-symbol :
+    draw("symbol") = Circle(scale * x, scale * y, scale * r)
+
+public defn unit-triangle (p0:Point|[Double, Double],
+                           p1:Point|[Double, Double],
+                           w:Double,
+                           scale:Double = UNIT-TO-MM) :
+  val [x0, y0] = point-coords(p0)
+  val [x1, y1] = point-coords(p1)
+
+  val [dx, dy] = [x1 - x0, y1 - y0]
+  val len = pow(pow(dx, 2.0) + pow(dy, 2.0), 0.5)
+  val [ux, uy] = [dx / len, dy / len]
+
+  val w2 = w / 2.0
+  val p2 = [x0 - (w2 * uy), y0 + (w2 * ux)]
+  val p3 = [x0 + (w2 * uy), y0 - (w2 * ux)]
+  
+  unit-polygon([p1, p2, p3], scale)
+
+public defn unit-val (p:Point|[Double, Double],
+                       txt = ">VALUE",
+                       size:Double = 0.5,
+                       a:Anchor = W,
+                       scale:Double = UNIT-TO-MM) :
+  inside pcb-symbol :
+    ;val pt-size = to-int(ceil(size * scale * MM-TO-POINT)) [TODO: Fix this]
+    val pt-size = 0.7056 ;[Placeholder]
+    draw("value") = Text(to-string(txt), pt-size, a, unit-loc(p, scale))
+
+public defn unit-approx-arc (p:Point|[Double, Double], 
+                             r:Double,
+                             a1:Double,
+                             a0:Double = 0.0,
+                             w:Double = 0.05,
+                             n:Int = 10,
+                             scale:Double = UNIT-TO-MM) :
+  val pts = Vector<[Double, Double]>()
+  val a-delta = (a1 - a0) / to-double(n)
+  val [x, y] = point-coords(p)
+
+  for i in 0 through n do :
+    val ai = a0 + to-double(i) * a-delta
+    add(pts, [x + r * cos(ai), y + r * sin(ai)])
+
+  unit-line(pts, w, scale)
+
+
+
