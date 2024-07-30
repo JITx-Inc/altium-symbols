@@ -3,24 +3,29 @@ defpackage altium-symbols/examples/simple :
   import core
   import jitx
   import jitx/commands
-  import ocdb/utils/generic-components
   import altium-symbols
   import altium-symbols/examples/board
+  import altium-symbols/examples/components/comp-resistor
+  import altium-symbols/examples/components/comp-capacitor
 
 ; Module to run as a design
 pcb-module top-level :
-  pin GND
-  pin VDD
-  pin signal
+  port GND
+  port VDD
+  port signal
 
-  ; Create a 10k resistor component
-  res-strap(signal, VDD, 10.0e3)
-  cap-strap(signal, GND, 10.0e3)
+  ; Instantiate components
+  inst R1 : altium-symbols/examples/components/comp-resistor/component
+  inst C1 : altium-symbols/examples/components/comp-capacitor/component
+  
+  ; Connect components
+  net (R1.p[1], signal)
+  net net-VDD (R1.p[2], VDD)
+  net (C1.p[1], signal)
+  net net-GND (C1.p[2], GND)
 
-  net net-GND (GND)
+  ; Specify Power/Ground Symbols
   symbol(net-GND) = altium-power-gnd-earth-sym
-
-  net net-VDD (VDD)
   symbol(net-VDD) = altium-power-wave-sym
 
 val board-shape = RoundedRectangle(50.0, 50.0, 0.25)
@@ -29,7 +34,6 @@ val board-shape = RoundedRectangle(50.0, 50.0, 0.25)
 set-current-design("simple")
 set-rules(default-rules)
 set-board(default-board(board-shape))
-
 set-main-module(top-level)
 
 ; View the results
