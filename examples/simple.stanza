@@ -5,7 +5,7 @@ defpackage altium-symbols/examples/simple :
   import jitx/commands
   import ocdb/utils/generic-components
   import altium-symbols
-  import jsl/examples/landpatterns/board
+  import altium-symbols/examples/board
 
 ; Module to run as a design
 pcb-module top-level :

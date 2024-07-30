@@ -1,5 +1,5 @@
 name = "altium-symbols"
 version = "0.1.0"
 [dependencies]
-jsl = { git = "JITx-Inc/jsl", version = "0.3.2" }
+
 

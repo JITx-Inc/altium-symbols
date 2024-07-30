@@ -1,4 +1,7 @@
+include? ".slm/stanza.proj"  ; Dependencies
+pkg-cache: ".slm/pkg-cache"
 
+package altium-symbols defined-in "./src/altium-symbols.stanza"
 packages altium-symbols/* defined-in "./src/"
 packages altium-symbols/examples/* defined-in "./examples/"
 
