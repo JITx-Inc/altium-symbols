@@ -38,9 +38,7 @@ set-main-module(top-level)
 
 ; View the results
 view-board()
-
-set-export-backend(`kicad)
 view-schematic()
-export-cad()
+
 
 
