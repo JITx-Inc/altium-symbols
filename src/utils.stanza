@@ -71,14 +71,16 @@ public defn unit-triangle (p0:Point|[Double, Double],
   unit-polygon([p1, p2, p3], scale)
 
 public defn unit-val (p:Point|[Double, Double],
+                      --
                        txt = ">VALUE",
-                       size:Double = 0.5,
+                       size:Double = 0.27,
                        a:Anchor = W,
-                       scale:Double = UNIT-TO-MM) :
+                       scale:Double = UNIT-TO-MM
+                       pose:Pose = loc(0.0, 0.0)) :
   inside pcb-symbol :
     ;val pt-size = to-int(ceil(size * scale * MM-TO-POINT)) [TODO: Fix this]
-    val pt-size = 0.7056 ;[Placeholder]
-    draw("value") = Text(to-string(txt), pt-size, a, unit-loc(p, scale))
+    val pt-size = size * scale
+    draw("value") = pose * Text(to-string(txt), pt-size, a, unit-loc(p, scale))
 
 public defn unit-approx-arc (p:Point|[Double, Double], 
                              r:Double,
