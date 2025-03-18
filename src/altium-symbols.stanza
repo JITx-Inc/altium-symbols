@@ -86,8 +86,8 @@ public pcb-symbol altium-power-circle-sym :
 
   unit-circle([3.0 / 2.0 * 0.5, 0.0], 0.5 / 2.0)
   unit-line([[0.0, 0.0], [0.5, 0.0]])
-  unit-val([1.0, -0.2])
-  
+  unit-val([0.0, -1.7], a = S, pose = loc(0.0, 0.0, 90.0), size = 0.5)
+
   preferred-orientation = PreferRotation([1])
 
 public pcb-symbol altium-power-arrow-sym :
@@ -96,7 +96,7 @@ public pcb-symbol altium-power-arrow-sym :
 
   unit-line([[0.0, 0.0], [0.3, 0.0]])
   unit-triangle([0.3, 0.0], [0.9, 0.0], 0.6)
-  unit-val([1.0, -0.2])
+  unit-val([0.0, -1.6], a = S, pose = loc(0.0, 0.0, 90.0), size = 0.5)
 
   preferred-orientation = PreferRotation([1])
 
@@ -106,7 +106,7 @@ public pcb-symbol altium-power-bar-sym :
 
   unit-line([[0.0, 0.0], [1.0, 0.0]])
   unit-line([[1.0, 0.5], [1.0, -0.5]])
-  unit-val([0.2, 0.2])
+  unit-val([0.0, -1.7], a = S, pose = loc(0.0, 0.0, 90.0) , size = 0.5)
 
   preferred-orientation = PreferRotation([1])
 
@@ -117,6 +117,7 @@ public pcb-symbol altium-power-wave-sym :
   unit-line([[0.0, 0.0], [0.6, 0.0]])
   unit-approx-arc([1.0, 0.0], 0.4, PI, 3.0 * PI / 2.0)
   unit-approx-arc([0.2, 0.0], 0.4, PI / 2.0)
+  unit-val([0.0, -1.7], a = S, pose = loc(0.0, 0.0, 90.0) , size = 0.5)
 
   preferred-orientation = PreferRotation([1])
 
@@ -129,7 +130,7 @@ public pcb-symbol altium-power-gnd-power-sym :
   unit-line([[1.28, -0.72], [1.28, 0.72]], 0.1)
   unit-line([[1.56, -0.44], [1.56, 0.44]], 0.1)
   unit-line([[1.84, -0.16], [1.84, 0.16]], 0.1)
-  unit-val([1.0, -0.4])
+  unit-val([0.0, -2.0], a = N, pose = loc(0.0, 0.0, 90.0), size = 0.5)
 
   preferred-orientation = PreferRotation([3])
 
@@ -139,7 +140,7 @@ public pcb-symbol altium-power-gnd-signal-sym :
 
   unit-line([[0.0, 0.0], [1.0, 0.0]])
   unit-triangle([1.0, 0.0], [2.0, 0.0], 2.0)
-  unit-val([1.0, -0.4])
+  unit-val([0.0, -2.0], a = N, pose = loc(0.0, 0.0, 90.0), size = 0.5)
 
   preferred-orientation = PreferRotation([3])
 
@@ -153,7 +154,7 @@ public pcb-symbol altium-power-gnd-earth-sym :
   unit-line([[1.0, 0.0], [2.0, -0.5]])
   unit-line([[1.0, 1.0], [2.0, 0.5]])
 
-  unit-val([0.2, -0.2])
+  unit-val([0.0, -2.0], a = N, pose = loc(0.0, 0.0, 90.0), size = 0.5)
 
   preferred-orientation = PreferRotation([3])
 
@@ -164,7 +165,8 @@ public pcb-symbol altium-gost-power-arrow-sym :
   unit-line([[0.0, 0.0], [1.0, 0.0]])
   unit-line([[1.0, 0.0], [0.4, 0.3]])
   unit-line([[1.0, 0.0], [0.4, -0.3]])
-  unit-val([0.6, 0.2])
+  unit-val([0.0, -1.7], a = S, pose = loc(0.0, 0.0, 90.0) , size = 0.5)
+
 
   preferred-orientation = PreferRotation([1])
 
@@ -176,7 +178,7 @@ public pcb-symbol altium-gost-gnd-power-sym :
   unit-line([[1.5, -1.0], [1.5, 1.0]], 0.1)
   unit-line([[1.9, -0.6], [1.9, 0.6]], 0.1)
   unit-line([[2.3, -0.2], [2.3, 0.2]], 0.1)
-  unit-val([0.2, -0.2])
+  unit-val([0.0, -2.5], a = N, pose = loc(0.0, 0.0, 90.0), size = 0.5)
 
   preferred-orientation = PreferRotation([3])
 
@@ -189,7 +191,7 @@ public pcb-symbol altium-gost-gnd-earth-sym :
   unit-line([[1.5, -1.0], [1.5, 1.0]], 0.1)
   unit-line([[1.9, -0.6], [1.9, 0.6]], 0.1)
   unit-line([[2.3, -0.2], [2.3, 0.2]], 0.1)
-  unit-val([0.72, -0.2])
+  unit-val([0.0, -3.0], a = N, pose = loc(0.0, 0.0, 90.0), size = 0.5)
 
   preferred-orientation = PreferRotation([3])
 
@@ -199,7 +201,8 @@ public pcb-symbol altium-gost-bar-sym :
 
   unit-line([[0.0, 0.0], [2.0, 0.0]])
   unit-line([[2.0, -0.8], [2.0, 0.8]])
-  unit-val([1.0, -0.2])
+  unit-val([0.0, -2.7], a = S, pose = loc(0.0, 0.0, 90.0) , size = 0.5)
+
 
   preferred-orientation = PreferRotation([1])
 
